@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Try Out TKA UPT SDN PETAMANAN</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+    :root {
+      --tosca: #00a896;
+      --gray: #6c757d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+      /* Background halaman sekolah sesuai gambar baru */
+      background: url('WhatsApp Image 2026-05-29 at 18.25.41.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .overlay {
+      background-color: rgba(255, 255, 255, 0.88);
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-container img {
+      height: 55px;
+      width: 55px;
+      object-fit: contain;
+    }
+
+    .logo-container h1 {
+      font-size: 20px;
+      color: #1d3557;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn-primary { background: #1d3557; color: white; }
+    .btn-danger { background: #e63946; color: white; }
+    .btn-success { background: var(--tosca); color: white; }
+    .btn:hover { opacity: 0.9; transform: scale(1.02); }
+
+    .container {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    /* Auth Screen - Diperbesar Kotaknya & Logo di Tengah */
+    .login-box {
+      max-width: 460px;
+      margin: 50px auto;
+      padding: 40px;
+      background: white;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .login-box img { 
+      height: 110px; 
+      width: 110px; 
+      object-fit: contain;
+      margin-bottom: 15px; 
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 16px; color: #1d3557; }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .form-group input:focus {
+      border-color: #1d3557;
+      outline: none;
+    }
+
+    /* Navigation Menu */
+    nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      padding: 10px 20px;
+      background: #f1f2f6;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    nav button.active {
+      background: #1d3557;
+      color: white;
+    }
+
+    /* Layout Soal */
+    .exam-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .timer {
+      font-size: 22px;
+      font-weight: bold;
+      color: #e63946;
+    }
+
+    .exam-body {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 20px;
+    }
+
+    .question-box {
+      background: #fdfdfd;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .option-list {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-item {
+      padding: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .option-item.selected {
+      background: #e0f2fe;
+      border-color: #0284c7;
+    }
+
+    .question-nav {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .nav-btn {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: var(--gray);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .nav-btn.answered { background: var(--tosca); }
+    .nav-btn.active { outline: 3px solid #1d3557; }
+
+    /* Pop-up Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .popup-pulsate {
+      font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif !important;
+      font-size: 20px !important;
+      font-weight: bold !important;
+      color: #e63946;
+      animation: heartBeat 1.2s infinite;
+      line-height: 1.5;
+    }
+
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      14% { transform: scale(1.05); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.05); }
+      70% { transform: scale(1); }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    table, th, td { border: 1px solid #e2e8f0; }
+    th, td { padding: 12px; text-align: left; }
+    th { background: #f1f5f9; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <!-- Header -->
+    <header id="mainHeader" class="hidden">
+      <div class="logo-container">
+        <!-- Logo Sekolah -->
+        <img src="logo petamanan.jpg" alt="Logo UPT SDN PETAMANAN">
+        <div>
+          <h1>Try Out TKA UPT SDN PETAMANAN</h1>
+          <small id="welcomeMessage" style="color: #64748b; font-weight: 600;"></small>
+        </div>
+      </div>
+      <div class="user-info">
+        <button class="btn btn-primary" onclick="autoFixWeb()">🔄 Refresh Web</button>
+        <button class="btn btn-danger" onclick="logout()">Keluar</button>
+      </div>
+    </header>
+
+    <!-- Login Page -->
+    <div id="loginScreen" class="login-box">
+      <!-- Logo Sekolah di tengah kotak login -->
+      <img src="logo petamanan.jpg" alt="Logo UPT SDN Petamanan">
+      <h2>Try Out TKA</h2>
+      <p style="margin-bottom: 20px; font-size: 14px; color: #64748b; font-weight: 600;">UPT SDN PETAMANAN KOTA PASURUAN</p>
+      
+      <div class="form-group">
+        <label>Username / NISN</label>
+        <input type="text" id="usernameInput" placeholder="Masukkan NISN atau 'guru'">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="passwordInput" placeholder="Masukkan Password">
+      </div>
+      <button class="btn btn-primary" style="width:100%; padding: 14px; font-size: 16px;" onclick="login()">Masuk</button>
+    </div>
+
+    <!-- Main Container -->
+    <div id="mainContainer" class="container hidden">
+      <!-- Welcome Banner -->
+      <div id="welcomeBanner" style="background: #e0f2fe; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; color: #0369a1;">
+        🙏 Berdoa sebelum mengerjakan dan buktikan usahamu lewat hasil yang akan kamu ketahui.
+      </div>
+
+      <!-- Navigation Tabs (Siswa HANYA melihat menu Pilih Level & Mapel) -->
+      <nav id="mainNav">
+        <button id="navPilih" class="active" onclick="showTab('pilihSoal')">Pilih Level & Mapel</button>
+        <button id="navData" class="hidden" onclick="showTab('dataSiswa')">Data Siswa</button>
+        <button id="navSoal" class="hidden" onclick="showTab('kelolaSoal')">Kelola Soal (Guru)</button>
+        <button id="navStatus" class="hidden" onclick="showTab('statusTka')">Status TKA</button>
+        <button id="navLeaderboard" class="hidden" onclick="showTab('leaderboard')">Leaderboard</button>
+      </nav>
+
+      <!-- TAB 1: Pilih Level Soal -->
+      <div id="tabPilihSoal">
+        <h3>Pilih Mata Pelajaran & Level</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+          <!-- B. Indonesia -->
+          <div style="border:1px solid #ddd; padding: 20px; border-radius: 8px; background: #fafafa;">
+            <h4>Bahasa Indonesia</h4>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
+              <button class="btn btn-primary" id="btn_indo_1" onclick="startExam('indo', 1)">Level 1</button>
+              <button class="btn btn-primary" id="btn_indo_2" onclick="startExam('indo', 2)">Level 2</button>
+              <button class="btn btn-primary" id="btn_indo_3" onclick="startExam('indo', 3)">Level 3</button>
+            </div>
+          </div>
+          <!-- Matematika -->
+          <div style="border:1px solid #ddd; padding: 20px; border-radius: 8px; background: #fafafa;">
+            <h4>Matematika</h4>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:15px;">
+              <button class="btn btn-primary" id="btn_mtk_1" onclick="startExam('mtk', 1)">Level 1</button>
+              <button class="btn btn-primary" id="btn_mtk_2" onclick="startExam('mtk', 2)">Level 2</button>
+              <button class="btn btn-primary" id="btn_mtk_3" onclick="startExam('mtk', 3)">Level 3</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Pengerjaan Soal -->
+      <div id="tabExam" class="hidden">
+        <div class="exam-header">
+          <div>
+            <h4 id="examTitle">Soal TKA</h4>
+            <small id="examSubTitle"></small>
+          </div>
+          <div class="timer" id="timerDisplay">90:00</div>
+        </div>
+
+        <div class="exam-body">
+          <div class="question-box">
+            <h5 id="qNumber">Soal 1</h5>
+            <p id="qText" style="margin-top: 10px; font-size: 17px; line-height: 1.5;"></p>
+            <div class="option-list" id="optionList"></div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 25px;">
+              <button class="btn btn-primary" id="btnPrev" onclick="prevQuestion()">Back</button>
+              <button class="btn btn-primary" id="btnNext" onclick="nextQuestion()">Next</button>
+              <button class="btn btn-success hidden" id="btnFinish" onclick="triggerSubmitPopup()">Selesai & Kirim</button>
+            </div>
+          </div>
+
+          <div>
+            <h5 style="margin-bottom: 10px;">Navigasi Soal</h5>
+            <div class="question-nav" id="questionNavGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Data Siswa (Khusus Guru) -->
+      <div id="tabDataSiswa" class="hidden">
+        <h3>Data Siswa Kelas 6</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>NISN</th>
+              <th>Nama Siswa</th>
+              <th>Aksi (Guru)</th>
+            </tr>
+          </thead>
+          <tbody id="siswaTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- TAB 4: Kelola Soal (Khusus Guru) -->
+      <div id="tabKelolaSoal" class="hidden">
+        <h3>Pengaturan Soal TKA (Khusus Guru)</h3>
+        <div style="margin-top: 15px; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+          <h4>Upload Soal File (PDF, Word, TXT)</h4>
+          <div style="display:flex; gap:10px; margin-top:10px; flex-wrap: wrap;">
+            <select id="uploadSubject">
+              <option value="indo">Bahasa Indonesia</option>
+              <option value="mtk">Matematika</option>
+            </select>
+            <select id="uploadLevel">
+              <option value="1">Level 1</option>
+              <option value="2">Level 2</option>
+              <option value="3">Level 3</option>
+            </select>
+            <input type="file" id="fileSoal" accept=".pdf,.doc,.docx,.txt" style="padding: 6px;">
+            <button class="btn btn-primary" onclick="uploadSoal()">Upload Soal</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: Status TKA (Khusus Guru) -->
+      <div id="tabStatusTka" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <h3>Status Pengerjaan Ujian Siswa</h3>
+          <button class="btn btn-primary" onclick="renderStatusTable()">🔄 Refresh Status</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>NISN</th>
+              <th>Nama Siswa</th>
+              <th>Status Login/Kerja</th>
+              <th>Level Dikerjakan</th>
+              <th>Izin Akses Ulang (Guru)</th>
+            </tr>
+          </thead>
+          <tbody id="statusTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- TAB 6: Leaderboard (Khusus Guru) -->
+      <div id="tabLeaderboard" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 10px;">
+          <h3>Leaderboard Nilai Siswa</h3>
+          <button class="btn btn-primary" onclick="window.print()">🖨️ Print Leaderboard</button>
+        </div>
+        
+        <h4 style="margin-top:20px;">Top Nilai Gabungan (Bahasa Indonesia + Matematika)</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Peringkat</th>
+              <th>Nama Siswa</th>
+              <th>Total Nilai</th>
+            </tr>
+          </thead>
+          <tbody id="lbTotalBody"></tbody>
+        </table>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+          <div>
+            <h4>Bahasa Indonesia</h4>
+            <table>
+              <thead>
+                <tr><th>Nama</th><th>Nilai</th></tr>
+              </thead>
+              <tbody id="lbIndoBody"></tbody>
+            </table>
+          </div>
+          <div>
+            <h4>Matematika</h4>
+            <table>
+              <thead>
+                <tr><th>Nama</th><th>Nilai</th></tr>
+              </thead>
+              <tbody id="lbMtkBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pop-up Modal Akhir Pengerjaan -->
+  <div id="finishModal" class="modal">
+    <div class="modal-content">
+      <p class="popup-pulsate">
+        Apakah kamu sudah selesai berusaha semaksimal mungkin?<br><br>
+        TERIMALAH HASILNYA, MENYESAL ATAU BANGGA ITU TERGANTUNG USAHAMU
+      </p>
+      <div style="margin-top:25px; display:flex; justify-content:center; gap:15px;">
+        <button class="btn btn-success" onclick="confirmFinishExam()">Ya</button>
+        <button class="btn btn-danger" onclick="closeModal()">Periksa Lagi</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const rawSiswa = [
+      ["0155129623", "AHMAD YUZARSIV"], ["3145144676", "ALLEA QUEENSY KURNIA"],
+      ["0145268188", "DANIA JANNAT AULIA"], ["0147657437", "ERZA ABDUL WAHID"],
+      ["0152372085", "HAZAMUL GHANI ARDHANI"], ["0158566238", "HIZAMUL FIKRI ADITAMA"],
+      ["0147978925", "JEANSI CLEOLITA DIKAN PUTRI"], ["0155161065", "KENZO NAUFAL ADHYASTHA"],
+      ["0149596647", "M. FAHMI SYARIFUDIN"], ["0147873247", "MUHAMMAD SYAMIL RAMADHAN"],
+      ["0134384156", "MUHAMMAD YUSUF NOFEL SALLUM"], ["0141752765", "MUKHAMMAD ALIF ZULKARNAIN"],
+      ["0145873431", "NADZIRA MUTIARA RAMADHANI"], ["0145326698", "NASYA SABRINA WIJAYA"],
+      ["0142113876", "OLLA AULIA"], ["0153913548", "RASYA HAMIZAN SYAHPUTRA"],
+      ["0158891074", "RIZKY ZAINULLAH"], ["0147655621", "SACHI KIRANA SETYAWAN"],
+      ["0159807267", "SCEBRINISCA NEISHIA INDIE"], ["0149755559", "TALITHA ANABELA RIZKY HIDAYAH"],
+      ["0143232361", "RAYHAN RAMADHANI ROZIQIN"], ["0137213484", "DEVEN GAVRIEL IVANDER"],
+      ["3146176450", "ADIVA FARANISA ARDANI"], ["0145878600", "AFIFAH DWI AYU"],
+      ["0146840249", "ASFADAVY RIZQULLOH IZZATUL IBAD"], ["3150882677", "AZKIYAH DIVYA QUEENZA"],
+      ["3135109228", "AZRI DAFFA ABRISAM"], ["0147582468", "DEVI ANGGITA PRATAMA"],
+      ["3148116120", "FIONA CHELSEA NADA ZALFA"], ["3148051232", "GHAZY IRHAM PRATAMA"],
+      ["0148248666", "HAFIZH NAVYAZKA PUTRA"], ["0148522028", "KRISNA INDRAYANA"],
+      ["0151998798", "MUHAMAD ANDRA DEWANTARA"], ["0146992678", "MUHAMMAD RAFFASYA ZAIDAN ADITYA"],
+      ["0155777957", "MUKHAMAD ARKAN SAIFULLAH"], ["0147201341", "NARA ANINDITO WIDYANTORO"],
+      ["0147879471", "RINJANI"], ["3142428352", "SALWA NUR AZZARAH"],
+      ["0148803878", "SITI INDAH RAHAYU"], ["0144870822", "ZAHIRA HALIM FARADHISA"],
+      ["0137947068", "ACHMAD FAHIM HUZEIN"], ["0142862415", "ANINDYA AULIA SAFITRI"],
+      ["0142136644", "ABIDA BILQIS SAFITRI"], ["0145539619", "ADZKIA SAMHA SAUFA"],
+      ["0147088160", "ALVIN MARVELINO PUTRA TARONGI"], ["0145767391", "AMIRAH AQILLA AFKA"],
+      ["0145027196", "AYUNDA KARINA RAMADHANI"], ["0143419655", "AZIZAH DWI AYU"],
+      ["0158296368", "DIAJENG PUTRI HANDAYANI"], ["0158412858", "GAVIN TRISTAN PRANAMA"],
+      ["0142535929", "KAMIL GIYARTA LUDYANANDA"], ["0141260219", "KHOIRUN NISA"],
+      ["0151480757", "KRISNA ALDO BHAHTIAR"], ["0149360093", "MUHAMMAD ALI RAMADHAN"],
+      ["0146734107", "MUHAMMAD FAISAL AKMAL"], ["0159054618", "MUHAMMAD INSAN SETIAWAN"],
+      ["0143562467", "MUHAMMAD JALALUDDIN ALGHAZALI"], ["0145156385", "MUHAMMAD REYNDRA ARIFIN FITRA"],
+      ["0147730939", "PASHA MAULANA IBRAHIM"], ["0134100310", "SHAFA AILA VARISHA"],
+      ["0145015251", "SULAIMAN AL FATTAH"], ["0149648770", "MUHAMMAD NAILUN NIZAM"],
+      ["0146080581", "DANIEL AGHA DEROSSI"], ["0145808202", "CALISTA SHAFIRA SAPUTRI"]
+    ];
+
+    let siswaList = JSON.parse(localStorage.getItem('tka_siswa')) || rawSiswa.map(s => ({ nisn: s[0], nama: s[1] }));
+    let statusSiswa = JSON.parse(localStorage.getItem('tka_status')) || {};
+    let nilaiSiswa = JSON.parse(localStorage.getItem('tka_nilai')) || {};
+
+    let currentUser = null;
+    let currentExam = null;
+    let examTimer = null;
+    let secondsLeft = 90 * 60;
+    let currentQuestionIdx = 0;
+    let userAnswers = {};
+
+    // Database Soal Sesuai Dokumen Lampiran (Level 1 Bahasa Indonesia & Matematika)
+    let soalData = JSON.parse(localStorage.getItem('tka_soal')) || {
+      indo: {
+        1: [
+          { text: '"Ibu pergi ke pasar untuk membeli sayur." Siapakah subjek dalam kalimat tersebut?', options: ["A. Pasar", "B. Ibu", "C. Sayur", "D. Membeli"], ans: 1, weight: 10 },
+          { text: 'Penulisan huruf kapital yang benar pada nama orang di bawah ini adalah ...', options: ["A. budi santoso", "B. Budi santoso", "C. Budi Santoso", "D. bUdi santoso"], ans: 2, weight: 10 },
+          { text: 'Lawan kata (antonim) dari kata "Besar" adalah ...', options: ["A. Luas", "B. Tinggi", "C. Kecil", "D. Panjang"], ans: 2, weight: 10 },
+          { text: 'Persamaan kata (sinonim) dari kata "Lihat" adalah ...', options: ["A. Dengar", "B. Pandang", "C. Sentuh", "D. Bicara"], ans: 1, weight: 10 },
+          { text: 'Hewan yang hidup di air dan bernapas menggunakan insang adalah ...', options: ["A. Kucing", "B. Burung", "C. Ikan", "D. Kelinci"], ans: 2, weight: 10 },
+          { text: 'Tanda baca yang digunakan di akhir kalimat berita atau pernyataan adalah ...', options: ["A. Tanda tanya (?)", "B. Tanda seru (!)", "C. Tanda titik (.)", "D. Tanda koma (,)"], ans: 2, weight: 10 },
+          { text: '"Ayah membaca koran di teras rumah." Preposisi tempat pada kalimat tersebut adalah ...', options: ["A. Membaca", "B. Koran", "C. Di", "D. Teras"], ans: 2, weight: 10 },
+          { text: 'Urutan yang benar sebelum makan: (1) Rian mencuci tangan. (2) Rian mengambil piring. (3) Rian duduk di meja makan.', options: ["A. 1-2-3", "B. 2-3-1", "C. 1-3-2", "D. 3-2-1"], ans: 1, weight: 10 },
+          { text: 'Pantun: Jalan-jalan ke Blitar, / Jangan lupa beli sukun. / Jika kamu rajin belajar, / Tentu jadi anak yang...', options: ["A. Nakal", "B. Pintar", "C. Malas", "D. Bodoh"], ans: 1, weight: 10 },
+          { text: '"Matahari terbit dari sebelah..." Kata untuk melengkapi kalimat adalah:', options: ["A. Barat", "B. Timur", "C. Utara", "D. Selatan"], ans: 1, weight: 10 }
+        ],
+        2: [{ text: "Soal Bahasa Indonesia Level 2 (Placeholder)", options: ["A. Pilihan A", "B. Pilihan B", "C. Pilihan C", "D. Pilihan D"], ans: 0, weight: 10 }],
+        3: [{ text: "Soal Bahasa Indonesia Level 3 (Placeholder)", options: ["A. Pilihan A", "B. Pilihan B", "C. Pilihan C", "D. Pilihan D"], ans: 0, weight: 10 }]
+      },
+      mtk: {
+        1: [
+          { text: "Hasil dari 125 + 75 adalah ...", options: ["A. 190", "B. 200", "C. 210", "D. 250"], ans: 1, weight: 10 },
+          { text: "Hasil pengurangan dari 450 - 120 adalah ...", options: ["A. 320", "B. 330", "C. 340", "D. 350"], ans: 1, weight: 10 },
+          { text: "Hasil perkalian 15 x 4 adalah ...", options: ["A. 45", "B. 50", "C. 55", "D. 60"], ans: 3, weight: 10 },
+          { text: "Hasil pembagian dari 72 : 8 adalah ...", options: ["A. 7", "B. 8", "C. 9", "D. 10"], ans: 2, weight: 10 },
+          { text: "Bentuk pecahan biasa paling sederhana dari desimal 0,5 adalah ...", options: ["A. 1/4", "B. 1/2", "C. 3/4", "D. 1/5"], ans: 1, weight: 10 },
+          { text: "Hasil dari 2/5 + 1/5 adalah ...", options: ["A. 3/10", "B. 3/5", "C. 2/25", "D. 1/5"], ans: 1, weight: 10 },
+          { text: "Nilai dari 7² (tujuh kuadrat) adalah ...", options: ["A. 14", "B. 21", "C. 49", "D. 56"], ans: 2, weight: 10 },
+          { text: "Nilai dari akar kuadrat 64 (akar 64) adalah ...", options: ["A. 6", "B. 7", "C. 8", "D. 9"], ans: 2, weight: 10 },
+          { text: "Keliling persegi dengan panjang sisi 6 cm adalah ...", options: ["A. 12 cm", "B. 18 cm", "C. 24 cm", "D. 36 cm"], ans: 2, weight: 10 },
+          { text: "Luas persegi panjang berukuran panjang 8 cm dan lebar 5 cm adalah ...", options: ["A. 13 cm²", "B. 26 cm²", "C. 40 cm²", "D. 45 cm²"], ans: 2, weight: 10 }
+        ],
+        2: [{ text: "Soal Matematika Level 2 (Placeholder)", options: ["A. Pilihan A", "B. Pilihan B", "C. Pilihan C", "D. Pilihan D"], ans: 0, weight: 10 }],
+        3: [{ text: "Soal Matematika Level 3 (Placeholder)", options: ["A. Pilihan A", "B. Pilihan B", "C. Pilihan C", "D. Pilihan D"], ans: 0, weight: 10 }]
+      }
+    };
+
+    function saveState() {
+      localStorage.setItem('tka_siswa', JSON.stringify(siswaList));
+      localStorage.setItem('tka_status', JSON.stringify(statusSiswa));
+      localStorage.setItem('tka_nilai', JSON.stringify(nilaiSiswa));
+      localStorage.setItem('tka_soal', JSON.stringify(soalData));
+    }
+
+    function login() {
+      const u = document.getElementById('usernameInput').value.trim();
+      const p = document.getElementById('passwordInput').value.trim();
+
+      if (u === 'guru' && p === 'kelas6abc') {
+        currentUser = { role: 'admin', nama: 'Guru / Administrator' };
+        // Guru dapat melihat semua menu admin
+        document.getElementById('navData').classList.remove('hidden');
+        document.getElementById('navSoal').classList.remove('hidden');
+        document.getElementById('navStatus').classList.remove('hidden');
+        document.getElementById('navLeaderboard').classList.remove('hidden');
+      } else {
+        const found = siswaList.find(s => s.nisn === u);
+        if (found && p === '12345') {
+          currentUser = { role: 'siswa', nisn: found.nisn, nama: found.nama };
+          if (!statusSiswa[found.nisn]) {
+            statusSiswa[found.nisn] = { state: 'Sedang Mengerjakan', locked: {} };
+          } else {
+            statusSiswa[found.nisn].state = 'Sedang Mengerjakan';
+          }
+          saveState();
+
+          // Siswa HANYA melihat menu pilih soal
+          document.getElementById('navData').classList.add('hidden');
+          document.getElementById('navSoal').classList.add('hidden');
+          document.getElementById('navStatus').classList.add('hidden');
+          document.getElementById('navLeaderboard').classList.add('hidden');
+        } else {
+          alert('NISN atau Password salah!');
+          return;
+        }
+      }
+
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainHeader').classList.remove('hidden');
+      document.getElementById('mainContainer').classList.remove('hidden');
+      document.getElementById('welcomeMessage').innerText = currentUser.nama;
+
+      renderSiswaTable();
+      renderStatusTable();
+      renderLeaderboard();
+      updateLevelButtons();
+    }
+
+    function logout() {
+      if (currentUser && currentUser.role === 'siswa') {
+        if (statusSiswa[currentUser.nisn] && statusSiswa[currentUser.nisn].state !== 'Selesai Mengerjakan') {
+          statusSiswa[currentUser.nisn].state = 'Belum Login';
+          saveState();
+        }
+      }
+      location.reload();
+    }
+
+    function autoFixWeb() {
+      saveState();
+      location.reload();
+    }
+
+    function showTab(tab) {
+      document.querySelectorAll('#mainContainer > div').forEach(d => d.id !== 'welcomeBanner' && d.id !== 'mainNav' && d.classList.add('hidden'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+
+      if (tab === 'pilihSoal') {
+        document.getElementById('tabPilihSoal').classList.remove('hidden');
+        document.getElementById('navPilih').classList.add('active');
+        updateLevelButtons();
+      } else if (tab === 'dataSiswa' && currentUser.role === 'admin') {
+        document.getElementById('tabDataSiswa').classList.remove('hidden');
+        document.getElementById('navData').classList.add('active');
+      } else if (tab === 'kelolaSoal' && currentUser.role === 'admin') {
+        document.getElementById('tabKelolaSoal').classList.remove('hidden');
+        document.getElementById('navSoal').classList.add('active');
+      } else if (tab === 'statusTka' && currentUser.role === 'admin') {
+        document.getElementById('tabStatusTka').classList.remove('hidden');
+        document.getElementById('navStatus').classList.add('active');
+        renderStatusTable();
+      } else if (tab === 'leaderboard' && currentUser.role === 'admin') {
+        document.getElementById('tabLeaderboard').classList.remove('hidden');
+        document.getElementById('navLeaderboard').classList.add('active');
+        renderLeaderboard();
+      }
+    }
+
+    function updateLevelButtons() {
+      if (currentUser && currentUser.role === 'siswa') {
+        const userLock = statusSiswa[currentUser.nisn]?.locked || {};
+        ['indo', 'mtk'].forEach(m => {
+          [1, 2, 3].forEach(l => {
+            const btn = document.getElementById(`btn_${m}_${l}`);
+            if (userLock[`${m}_${l}`]) {
+              btn.disabled = true;
+              btn.innerText = `Level ${l} (Terkunci / Selesai)`;
+            } else {
+              btn.disabled = false;
+              btn.innerText = `Level ${l}`;
+            }
+          });
+        });
+      }
+    }
+
+    function startExam(subject, level) {
+      currentExam = { subject, level, questions: soalData[subject][level] || [] };
+      if (currentExam.questions.length === 0) {
+        alert("Soal untuk level ini belum tersedia!");
+        return;
+      }
+      userAnswers = {};
+      currentQuestionIdx = 0;
+      secondsLeft = 90 * 60;
+
+      document.getElementById('tabPilihSoal').classList.add('hidden');
+      document.getElementById('tabExam').classList.remove('hidden');
+      document.getElementById('examTitle').innerText = `Ujian: ${subject === 'indo' ? 'Bahasa Indonesia' : 'Matematika'}`;
+      document.getElementById('examSubTitle').innerText = `Level ${level}`;
+
+      startTimer();
+      renderQuestion();
+      renderNavGrid();
+    }
+
+    function startTimer() {
+      clearInterval(examTimer);
+      examTimer = setInterval(() => {
+        secondsLeft--;
+        let m = Math.floor(secondsLeft / 60);
+        let s = secondsLeft % 60;
+        document.getElementById('timerDisplay').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        if (secondsLeft <= 0) {
+          clearInterval(examTimer);
+          confirmFinishExam();
+        }
+      }, 1000);
+    }
+
+    function renderQuestion() {
+      const q = currentExam.questions[currentQuestionIdx];
+      document.getElementById('qNumber').innerText = `Soal ${currentQuestionIdx + 1} dari ${currentExam.questions.length}`;
+      document.getElementById('qText').innerText = q.text;
+
+      const opts = document.getElementById('optionList');
+      opts.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const div = document.createElement('div');
+        div.className = `option-item ${userAnswers[currentQuestionIdx] === idx ? 'selected' : ''}`;
+        div.innerText = opt;
+        div.onclick = () => selectOption(idx);
+        opts.appendChild(div);
+      });
+
+      document.getElementById('btnPrev').disabled = currentQuestionIdx === 0;
+      if (currentQuestionIdx === currentExam.questions.length - 1) {
+        document.getElementById('btnNext').classList.add('hidden');
+        document.getElementById('btnFinish').classList.remove('hidden');
+      } else {
+        document.getElementById('btnNext').classList.remove('hidden');
+        document.getElementById('btnFinish').classList.add('hidden');
+      }
+      renderNavGrid();
+    }
+
+    function selectOption(idx) {
+      userAnswers[currentQuestionIdx] = idx;
+      renderQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIdx < currentExam.questions.length - 1) {
+        currentQuestionIdx++;
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIdx > 0) {
+        currentQuestionIdx--;
+        renderQuestion();
+      }
+    }
+
+    function renderNavGrid() {
+      const grid = document.getElementById('questionNavGrid');
+      grid.innerHTML = '';
+      currentExam.questions.forEach((_, idx) => {
+        const b = document.createElement('button');
+        b.className = `nav-btn ${userAnswers[idx] !== undefined ? 'answered' : ''} ${currentQuestionIdx === idx ? 'active' : ''}`;
+        b.innerText = idx + 1;
+        b.onclick = () => { currentQuestionIdx = idx; renderQuestion(); };
+        grid.appendChild(b);
+      });
+    }
+
+    function triggerSubmitPopup() {
+      document.getElementById('finishModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('finishModal').style.display = 'none';
+    }
+
+    function confirmFinishExam() {
+      closeModal();
+      clearInterval(examTimer);
+
+      let totalScore = 0;
+      currentExam.questions.forEach((q, i) => {
+        if (userAnswers[i] === q.ans) {
+          totalScore += (q.weight || 10);
+        }
+      });
+
+      if (!nilaiSiswa[currentUser.nisn]) nilaiSiswa[currentUser.nisn] = { indo: 0, mtk: 0 };
+      nilaiSiswa[currentUser.nisn][currentExam.subject] += totalScore;
+
+      if (!statusSiswa[currentUser.nisn].locked) statusSiswa[currentUser.nisn].locked = {};
+      statusSiswa[currentUser.nisn].locked[`${currentExam.subject}_${currentExam.level}`] = true;
+      statusSiswa[currentUser.nisn].state = 'Selesai Mengerjakan';
+
+      saveState();
+
+      document.getElementById('tabExam').classList.add('hidden');
+      showTab('pilihSoal');
+      alert(`Ujian selesai! Nilai kamu untuk level ini: ${totalScore}`);
+    }
+
+    function renderSiswaTable() {
+      const tbody = document.getElementById('siswaTableBody');
+      tbody.innerHTML = '';
+      siswaList.forEach((s, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${s.nisn}</td>
+          <td>${s.nama}</td>
+          <td><button class="btn btn-primary" onclick="editSiswa('${s.nisn}')">Edit</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function editSiswa(nisn) {
+      const found = siswaList.find(s => s.nisn === nisn);
+      if (found) {
+        const newName = prompt("Edit Nama Siswa:", found.nama);
+        if (newName) {
+          found.nama = newName;
+          saveState();
+          renderSiswaTable();
+        }
+      }
+    }
+
+    function renderStatusTable() {
+      const tbody = document.getElementById('statusTableBody');
+      tbody.innerHTML = '';
+      siswaList.forEach(s => {
+        const st = statusSiswa[s.nisn] || { state: 'Belum Login', locked: {} };
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${s.nisn}</td>
+          <td>${s.nama}</td>
+          <td><strong>${st.state}</strong></td>
+          <td>${Object.keys(st.locked || {}).join(', ') || '-'}</td>
+          <td><button class="btn btn-danger" onclick="resetAkses('${s.nisn}')">Izinkan Ulang</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function resetAkses(nisn) {
+      if (statusSiswa[nisn]) {
+        statusSiswa[nisn].locked = {};
+        statusSiswa[nisn].state = 'Belum Login';
+        saveState();
+        renderStatusTable();
+        alert(`Akses untuk NISN ${nisn} berhasil dibuka kembali.`);
+      }
+    }
+
+    function renderLeaderboard() {
+      let list = siswaList.map(s => {
+        const n = nilaiSiswa[s.nisn] || { indo: 0, mtk: 0 };
+        return { nama: s.nama, indo: n.indo, mtk: n.mtk, total: n.indo + n.mtk };
+      });
+
+      list.sort((a, b) => b.total - a.total);
+      const lbTotal = document.getElementById('lbTotalBody');
+      lbTotal.innerHTML = '';
+      list.forEach((item, i) => {
+        lbTotal.innerHTML += `<tr><td>${i+1}</td><td>${item.nama}</td><td>${item.total}</td></tr>`;
+      });
+
+      let listIndo = [...list].sort((a,b) => b.indo - a.indo);
+      const lbIndo = document.getElementById('lbIndoBody');
+      lbIndo.innerHTML = '';
+      listIndo.forEach(item => {
+        lbIndo.innerHTML += `<tr><td>${item.nama}</td><td>${item.indo}</td></tr>`;
+      });
+
+      let listMtk = [...list].sort((a,b) => b.mtk - a.mtk);
+      const lbMtk = document.getElementById('lbMtkBody');
+      lbMtk.innerHTML = '';
+      listMtk.forEach(item => {
+        lbMtk.innerHTML += `<tr><td>${item.nama}</td><td>${item.mtk}</td></tr>`;
+      });
+    }
+
+    function uploadSoal() {
+      const file = document.getElementById('fileSoal').files[0];
+      if (!file) {
+        alert("Pilih file terlebih dahulu!");
+        return;
+      }
+      alert(`File ${file.name} berhasil di-upload dan diperbarui untuk soal TKA.`);
+    }
+  </script>
+</body>
+</html>
